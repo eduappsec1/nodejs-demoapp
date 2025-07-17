@@ -9,6 +9,14 @@ import express from 'express'
 const router = express.Router()
 import { MongoClient, ObjectId } from 'mongodb'
 import appInsights from 'applicationinsights'
+import rateLimit from 'express-rate-limit'
+
+// Configure rate limiter: maximum of 100 requests per 15 minutes
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: { error: 'Too many requests, please try again later.' }, // Custom error message
+})
 
 const DBNAME = process.env.TODO_MONGO_DB || 'todoDb'
 const COLLECTION = 'todos'
@@ -99,7 +107,7 @@ router.put('/api/todo/:id', async function (req, res, next) {
 //
 // Todo API: DELETE - remove a todo from DB
 //
-router.delete('/api/todo/:id', async function (req, res, next) {
+router.delete('/api/todo/:id', apiLimiter, async function (req, res, next) {
   try {
     const result = await db.collection(COLLECTION).deleteOne({ _id: ObjectId(req.params.id) })
     if (result && result.deletedCount) {
