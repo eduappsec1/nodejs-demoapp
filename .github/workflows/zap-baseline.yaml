@@ -3,6 +3,8 @@ on: #[push]
 
 jobs:
   zap_scan:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     name: Scan the webapplication with ZAP
     steps:
