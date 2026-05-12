@@ -1,4 +1,4 @@
-# Node.js - Demo Web Application
+# Node.js - Demo Web App
 
 This is a simple Node.js web app using the Express framework and EJS templates.
 
